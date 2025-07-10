@@ -1,0 +1,865 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🌱 QualityGrow: Community Compost Grading Tool</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+        
+        .header {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+        
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+        
+        .form-content {
+            padding: 40px;
+        }
+        
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .section h2 {
+            color: #2c3e50;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .section-desc {
+            color: #666;
+            font-size: 1.1em;
+            margin-bottom: 25px;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+        
+        input[type="text"], input[type="email"], input[type="date"], input[type="number"], select, textarea {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+        
+        input[type="text"]:focus, input[type="email"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus, textarea:focus {
+            border-color: #4CAF50;
+            outline: none;
+        }
+        
+        .checkbox-group {
+            display: grid;
+            gap: 15px;
+            margin-top: 15px;
+        }
+        
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 15px;
+            background: white;
+            border-radius: 8px;
+            border: 2px solid #e0e0e0;
+            transition: all 0.3s;
+        }
+        
+        .checkbox-item:hover {
+            border-color: #4CAF50;
+            background: #f0f8f0;
+        }
+        
+        .checkbox-item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            accent-color: #4CAF50;
+        }
+        
+        .checkbox-item label {
+            margin: 0;
+            font-weight: normal;
+            cursor: pointer;
+        }
+        
+        .tip {
+            background: #e8f5e8;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 15px;
+            color: #2d5a2d;
+            font-style: italic;
+        }
+        
+        .test-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .test-grid-header {
+            font-weight: bold;
+            background: #4CAF50;
+            color: white;
+            padding: 10px;
+            text-align: center;
+            border-radius: 5px;
+        }
+        
+        .test-grid-item {
+            padding: 10px;
+            background: white;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .test-grid-item input[type="radio"] {
+            margin: 5px;
+        }
+        
+        .grade-btn {
+            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            color: white;
+            padding: 20px 40px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.3em;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            display: block;
+            margin: 40px auto;
+        }
+        
+        .grade-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.3);
+        }
+        
+        .results {
+            display: none;
+            margin-top: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 15px;
+            border-left: 5px solid #4CAF50;
+        }
+        
+        .grade-a {
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .grade-b {
+            background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .grade-c {
+            background: linear-gradient(135deg, #F44336 0%, #D32F2F 100%);
+            color: white;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+        }
+        
+        .qr-section {
+            text-align: center;
+            margin-top: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 10px;
+        }
+        
+        .qr-code {
+            width: 200px;
+            height: 200px;
+            margin: 20px auto;
+            background: #f0f0f0;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            color: #666;
+        }
+        
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+        
+        @media (max-width: 768px) {
+            .two-column {
+                grid-template-columns: 1fr;
+            }
+            
+            .test-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .container {
+                margin: 10px;
+            }
+            
+            .form-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🌱 QualityGrow</h1>
+            <p>Community Compost Grading Tool</p>
+        </div>
+        
+        <div class="form-content">
+            <p style="text-align: center; font-size: 1.2em; color: #666; margin-bottom: 30px;">
+                Help community composters across Australia evaluate the quality and safety of their compost in a friendly, supportive way. 
+                This form is a tool for learning and celebrating progress, not for inspection! 🧡
+            </p>
+            
+            <form id="compostForm">
+                <!-- Section 1: Site Information -->
+                <div class="section">
+                    <h2>🔷 SECTION 1: Compost Site Information</h2>
+                    <div class="section-desc">
+                        🧑‍🌾 <strong>Why it matters:</strong> Composting is a journey! These details help you keep track of your batches and celebrate your success over time.
+                    </div>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="orgName">Composting Organisation Name</label>
+                            <input type="text" id="orgName" name="orgName" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="batchCode">Compost Batch Code (e.g. "Autumn24-Garden")</label>
+                            <input type="text" id="batchCode" name="batchCode" required>
+                        </div>
+                    </div>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="city">City / Council Area</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="email">Contact Email</label>
+                            <input type="email" id="email" name="email" required>
+                        </div>
+                    </div>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="startDate">Start Date of Composting</label>
+                            <input type="date" id="startDate" name="startDate" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="testDate">Date of Compost Use or Testing</label>
+                            <input type="date" id="testDate" name="testDate" required>
+                        </div>
+                    </div>
+                    
+                    <div class="tip">
+                        ✅ <strong>Tip:</strong> Batch names help you track what works best.
+                    </div>
+                </div>
+                
+                <!-- Section 2: Process Checklist -->
+                <div class="section">
+                    <h2>🔷 SECTION 2: Composting Process Checklist</h2>
+                    <div class="section-desc">
+                        🔄 <strong>Why it matters:</strong> These simple practices make compost safer, cleaner, and better for your garden. Just tick what you did — every "yes" is progress!
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Inputs & Prep</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cleanInputs" name="process" value="cleanInputs">
+                            <label for="cleanInputs">Used only clean, source-separated organics (no plastic, nappies, meat)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="bulkingAgents" name="process" value="bulkingAgents">
+                            <label for="bulkingAgents">Added carbon-rich bulking agents (e.g. straw, woodchips)</label>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Hot Composting Phase</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="tempMonitor" name="process" value="tempMonitor">
+                            <label for="tempMonitor">Monitored pile temperature</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="temp55" name="process" value="temp55">
+                            <label for="temp55">Reached ≥55°C for at least 3 consecutive days</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="turned" name="process" value="turned">
+                            <label for="turned">Turned or aerated the pile regularly</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="moisture" name="process" value="moisture">
+                            <label for="moisture">Kept moisture like a wrung-out sponge</label>
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Curing & Finishing</h3>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="cured21" name="process" value="cured21">
+                            <label for="cured21">Allowed to cure for ≥21 days</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="earthy" name="process" value="earthy">
+                            <label for="earthy">Smells earthy (not sour)</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="crumbly" name="process" value="crumbly">
+                            <label for="crumbly">Crumbly texture, no reheating</label>
+                        </div>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="screened" name="process" value="screened">
+                            <label for="screened">Screened and removed visible contaminants</label>
+                        </div>
+                    </div>
+                    
+                    <div class="form-group" style="margin-top: 25px;">
+                        <label for="maxTemp">🌡️ Highest temperature recorded (°C)</label>
+                        <input type="number" id="maxTemp" name="maxTemp" min="0" max="100">
+                    </div>
+                    
+                    <div class="tip">
+                        ✅ <strong>Tip:</strong> If you didn't hit every step — that's okay! This tool helps you improve batch by batch.
+                    </div>
+                </div>
+                
+                <!-- Section 3: Test Results -->
+                <div class="section">
+                    <h2>🔷 SECTION 3: Test Results (Optional but Encouraged)</h2>
+                    <div class="section-desc">
+                        🧪 <strong>Why it matters:</strong> Simple tests help check if compost is fully mature and safe — especially if it's going into food gardens. But don't worry if you haven't tested yet!
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Basic Parameters</h3>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="ph">pH (Goal: 5.0–8.5)</label>
+                            <input type="number" id="ph" name="ph" min="0" max="14" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="moistureContent">Moisture Content % (Goal: 30–60%)</label>
+                            <input type="number" id="moistureContent" name="moistureContent" min="0" max="100">
+                        </div>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="cnRatio">C:N Ratio (Goal: <25:1)</label>
+                        <input type="number" id="cnRatio" name="cnRatio" min="0" max="100">
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Safety Testing</h3>
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="ecoliTested">Was compost tested for E. coli?</label>
+                            <select id="ecoliTested" name="ecoliTested">
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="heavyMetalsTested">Was compost tested for Heavy Metals?</label>
+                            <select id="heavyMetalsTested" name="heavyMetalsTested">
+                                <option value="">Select...</option>
+                                <option value="yes">Yes</option>
+                                <option value="no">No</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="two-column">
+                        <div class="form-group">
+                            <label for="lead">Lead (Pb) mg/kg (Goal: <150 mg/kg)</label>
+                            <input type="number" id="lead" name="lead" min="0" step="0.1">
+                        </div>
+                        <div class="form-group">
+                            <label for="cadmium">Cadmium (Cd) mg/kg (Goal: <1.5 mg/kg)</label>
+                            <input type="number" id="cadmium" name="cadmium" min="0" step="0.01">
+                        </div>
+                    </div>
+                    
+                    <h3 style="margin-top: 25px; color: #2c3e50;">Testing Method</h3>
+                    <div class="test-grid">
+                        <div class="test-grid-header">Parameter</div>
+                        <div class="test-grid-header">Certified Lab</div>
+                        <div class="test-grid-header">DIY</div>
+                        <div class="test-grid-header">Not Tested</div>
+                        
+                        <div class="test-grid-item">pH</div>
+                        <div class="test-grid-item"><input type="radio" name="phMethod" value="lab"></div>
+                        <div class="test-grid-item"><input type="radio" name="phMethod" value="diy"></div>
+                        <div class="test-grid-item"><input type="radio" name="phMethod" value="not"></div>
+                        
+                        <div class="test-grid-item">Moisture</div>
+                        <div class="test-grid-item"><input type="radio" name="moistureMethod" value="lab"></div>
+                        <div class="test-grid-item"><input type="radio" name="moistureMethod" value="diy"></div>
+                        <div class="test-grid-item"><input type="radio" name="moistureMethod" value="not"></div>
+                        
+                        <div class="test-grid-item">C:N</div>
+                        <div class="test-grid-item"><input type="radio" name="cnMethod" value="lab"></div>
+                        <div class="test-grid-item"><input type="radio" name="cnMethod" value="diy"></div>
+                        <div class="test-grid-item"><input type="radio" name="cnMethod" value="not"></div>
+                        
+                        <div class="test-grid-item">E. coli</div>
+                        <div class="test-grid-item"><input type="radio" name="ecoliMethod" value="lab"></div>
+                        <div class="test-grid-item"><input type="radio" name="ecoliMethod" value="diy"></div>
+                        <div class="test-grid-item"><input type="radio" name="ecoliMethod" value="not"></div>
+                        
+                        <div class="test-grid-item">Heavy Metals</div>
+                        <div class="test-grid-item"><input type="radio" name="heavyMetalsMethod" value="lab"></div>
+                        <div class="test-grid-item"><input type="radio" name="heavyMetalsMethod" value="diy"></div>
+                        <div class="test-grid-item"><input type="radio" name="heavyMetalsMethod" value="not"></div>
+                    </div>
+                    
+                    <div class="tip">
+                        ✅ <strong>Tip:</strong> Even simple tools like pH strips or squeeze tests can teach you a lot!
+                    </div>
+                </div>
+                
+                <!-- Section 4: Intended Use -->
+                <div class="section">
+                    <h2>🔷 SECTION 4: Intended Use</h2>
+                    <div class="section-desc">
+                        🌼 <strong>Why it matters:</strong> Different compost grades work best in different places. Let us help you match your compost to the right job!
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="intendedUse">Choose one:</label>
+                        <select id="intendedUse" name="intendedUse" required>
+                            <option value="">Select intended use...</option>
+                            <option value="edible">Edible gardens (veggies, herbs, schools)</option>
+                            <option value="landscaping">Landscaping or ornamental plants</option>
+                            <option value="farms">Farms / large garden beds</option>
+                            <option value="unsure">Not sure yet</option>
+                        </select>
+                    </div>
+                    
+                    <div class="tip">
+                        ✅ <strong>Tip:</strong> Grade A compost is ideal for food — but every compost has a purpose!
+                    </div>
+                </div>
+                
+                <button type="button" class="grade-btn" onclick="generateGrade()">
+                    🌱 Generate My Compost Grade!
+                </button>
+            </form>
+            
+            <!-- Results Section -->
+            <div id="results" class="results">
+                <h2>📊 Your Compost Grade Summary</h2>
+                <div id="gradeResult"></div>
+                <div id="detailsResult"></div>
+                <div class="qr-section">
+                    <h3>🔳 QR Code</h3>
+                    <div class="qr-code" id="qrCode">
+                        QR Code will appear here
+                    </div>
+                    <p>📱 Scan to view or share your compost summary</p>
+                    <p style="font-size: 0.9em; color: #666;">Perfect for printing, labelling, or sharing with teammates and community gardens!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function generateGrade() {
+            const form = document.getElementById('compostForm');
+            const formData = new FormData(form);
+            
+            // Check required fields
+            const requiredFields = ['orgName', 'batchCode', 'city', 'email', 'startDate', 'testDate', 'intendedUse'];
+            for (let field of requiredFields) {
+                if (!formData.get(field)) {
+                    alert(`Please fill in the ${field.replace(/([A-Z])/g, ' $1').toLowerCase()} field.`);
+                    return;
+                }
+            }
+            
+            // Get process checklist values
+            const processChecks = formData.getAll('process');
+            
+            // Calculate grade
+            const grade = calculateGrade(formData, processChecks);
+            
+            // Display results
+            displayResults(formData, processChecks, grade);
+            
+            // Scroll to results
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        function calculateGrade(formData, processChecks) {
+            let score = 0;
+            let maxScore = 0;
+            
+            // Process checks (40 points max)
+            const criticalChecks = ['cleanInputs', 'temp55', 'cured21', 'earthy', 'crumbly'];
+            const allChecks = ['cleanInputs', 'bulkingAgents', 'tempMonitor', 'temp55', 'turned', 'moisture', 'cured21', 'earthy', 'crumbly', 'screened'];
+            
+            for (let check of criticalChecks) {
+                if (processChecks.includes(check)) score += 8;
+                maxScore += 8;
+            }
+            
+            // Test results (30 points max)
+            const ecoliTested = formData.get('ecoliTested');
+            const heavyMetalsTested = formData.get('heavyMetalsTested');
+            const ph = parseFloat(formData.get('ph'));
+            const cnRatio = parseFloat(formData.get('cnRatio'));
+            const lead = parseFloat(formData.get('lead'));
+            const cadmium = parseFloat(formData.get('cadmium'));
+            
+            if (ecoliTested === 'yes') score += 10;
+            if (heavyMetalsTested === 'yes') score += 10;
+            if (ph >= 5.0 && ph <= 8.5) score += 5;
+            if (cnRatio < 25) score += 5;
+            maxScore += 30;
+            
+            // Safety thresholds
+            let safetyPass = true;
+            if (lead > 150) safetyPass = false;
+            if (cadmium > 1.5) safetyPass = false;
+            
+            // Temperature check
+            const maxTemp = parseFloat(formData.get('maxTemp'));
+            const tempReached = processChecks.includes('temp55') || maxTemp >= 55;
+            
+            // Determine grade
+            const percentage = (score / maxScore) * 100;
+            
+            if (percentage >= 80 && tempReached && safetyPass && ecoliTested === 'yes' && heavyMetalsTested === 'yes') {
+                return 'A';
+            } else if (percentage >= 60 && tempReached && processChecks.includes('earthy') && processChecks.includes('crumbly')) {
+                return 'B';
+            } else {
+                return 'C';
+            }
+        }
+        
+        function displayResults(formData, processChecks, grade) {
+            const resultsDiv = document.getElementById('results');
+            const gradeResultDiv = document.getElementById('gradeResult');
+            const detailsResultDiv = document.getElementById('detailsResult');
+            
+            resultsDiv.style.display = 'block';
+            
+            // Grade display
+            let gradeContent = '';
+            if (grade === 'A') {
+                gradeContent = `
+                    <div class="grade-a">
+                        <h3>🟢 Grade A – Ready for Veggie Beds!</h3>
+                        <p>✔ Hot composted (≥55°C)<br>
+                        ✔ Fully cured<br>
+                        ✔ E. coli and heavy metals tested + safe<br>
+                        ✔ Looks mature (earthy, crumbly)<br>
+                        ✔ No plastics or glass</p>
+                        <p><strong>Use:</strong> Edible gardens, schools, home plots</p>
+                    </div>
+                `;
+            } else if (grade === 'B') {
+                gradeContent = `
+                    <div class="grade-b">
+                        <h3>🟡 Grade B – Great for Trees & Parks</h3>
+                        <p>✔ Most process steps complete<br>
+                        ✖ Missing some test results<br>
+                        ✔ Compost looks ready<br>
+                        ✖ Some minor contamination okay</p>
+                        <p><strong>Use:</strong> Landscaping, trees, soil cover</p>
+                    </div>
+                `;
+            } else {
+                gradeContent = `
+                    <div class="grade-c">
+                        <h3>🔴 Grade C – Needs More Time</h3>
+                        <p>✖ Did not heat properly<br>
+                        ✖ Wet, smelly, or reheats<br>
+                        ✖ Not cured<br>
+                        ✖ Visible plastics or poor structure</p>
+                        <p><strong>Action:</strong> Cure longer, re-aerate, check moisture — your next batch will be even better!</p>
+                    </div>
+                `;
+            }
+            
+            gradeResultDiv.innerHTML = gradeContent;
+            
+            // Details summary
+            const batchCode = formData.get('batchCode');
+            const maxTemp = formData.get('maxTemp') || 'Not recorded';
+            const ecoliStatus = formData.get('ecoliTested') === 'yes' ? 'Tested' : 'Not tested';
+            const lead = formData.get('lead') || 'Not tested';
+            const cnRatio = formData.get('cnRatio') || 'Not tested';
+            
+            let useRecommendation = '';
+            if (grade === 'A') useRecommendation = 'Edible gardens';
+            else if (grade === 'B') useRecommendation = 'Landscaping';
+            else useRecommendation = 'Needs more curing';
+            
+            detailsResultDiv.innerHTML = `
+                <div style="background: white; padding: 20px; border-radius: 10px; margin-top: 20px;">
+                    <h4>Batch Code: ${batchCode}</h4>
+                    <p><strong>Grade:</strong> ${grade === 'A' ? '🟢' : grade === 'B' ? '🟡' : '🔴'} Grade ${grade}</p>
+                    <p><strong>Use Recommendation:</strong> ${useRecommendation}</p>
+                    <p><strong>Notes:</strong> ${grade === 'A' ? 'Mature, safe, and tested compost. Keep it up!' : grade === 'B' ? 'Good progress! Consider testing for food garden use.' : 'Keep composting - you\'re learning with each batch!'}</p>
+                    <hr style="margin: 15px 0;">
+                    <p><strong>Max Temp:</strong> ${maxTemp}°C | <strong>E. coli:</strong> ${ecoliStatus} | <strong>Lead:</strong> ${lead} mg/kg | <strong>C:N Ratio:</strong> ${cnRatio}</p>
+                    ${formData.get('ecoliTested') === 'yes' ? '<p>✅ Safety tested</p>' : ''}
+                    ${getTestingMethod(formData)}
+                </div>
+            `;
+            
+            // Generate QR code
+            generateQRCode(batchCode);
+        }
+        
+        function getTestingMethod(formData) {
+            const methods = [];
+            const phMethod = formData.get('phMethod');
+            const ecoliMethod = formData.get('ecoliMethod');
+            const heavyMetalsMethod = formData.get('heavyMetalsMethod');
+            
+            if (phMethod === 'lab' || ecoliMethod === 'lab' || heavyMetalsMethod === 'lab') {
+                methods.push('🧪 Lab-tested');
+            }
+            if (phMethod === 'diy' || ecoliMethod === 'diy' || heavyMetalsMethod === 'diy') {
+                methods.push('🔬 DIY tested');
+            }
+            
+            return methods.length > 0 ? `<p>${methods.join(' | ')}</p>` : '';
+        }
+        
+        function generateQRCode(batchCode) {
+            const qrCodeDiv = document.getElementById('qrCode');
+            const url = `https://qualitygrow.org/results/${batchCode}`;
+            
+            // Create a simple QR code representation
+            qrCodeDiv.innerHTML = `
+                <div style="font-family: monospace; font-size: 10px; line-height: 1;">
+                    <div style="background: #000; color: #000; padding: 5px;">
+                        ████████████████████████████████████████<br>
+                        ████ ▄▄▄▄▄ █▀█ █▄█▄▄▄▄███▄▄▄▄▄ ████<br>
+                        ████ █   █ █▀▀▀█ ▀▄▄▀▄▄█▄█   █ ████<br>
+                        ████ █▄▄▄█ █▀▀▄▄▄▀▀▄▄▄▀▀█▄▄▄█ ████<br>
+                        ████▄▄▄▄▄▄▄█▄█▄▀▄█▄▀▄█▄▀▄▄▄▄▄▄▄████<br>
+                        ████▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀▀████<br>
+                        ████                            ████<br>
+                        ████  ${batchCode.substring(0, 10).padEnd(10)}           ████<br>
+                        ████                            ████<br>
+                        ████▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄▄████<br>
+                        ████████████████████████████████████████
+                    </div>
+                    <div style="margin-top: 10px; font-size: 12px; color: #666;">
+                        ${url}
+                    </div>
+                </div>
+            `;
+        }
+        
+        // Auto-save form data to prevent loss
+        function saveFormData() {
+            const form = document.getElementById('compostForm');
+            const formData = new FormData(form);
+            const data = {};
+            
+            for (let [key, value] of formData.entries()) {
+                if (data[key]) {
+                    if (Array.isArray(data[key])) {
+                        data[key].push(value);
+                    } else {
+                        data[key] = [data[key], value];
+                    }
+                } else {
+                    data[key] = value;
+                }
+            }
+            
+            // Note: localStorage is not supported in artifacts, so we'll skip auto-save
+            // localStorage.setItem('compostFormData', JSON.stringify(data));
+        }
+        
+        // Add event listeners for auto-save
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.getElementById('compostForm');
+            form.addEventListener('change', saveFormData);
+            form.addEventListener('input', saveFormData);
+        });
+        
+        // Print functionality
+        function printResults() {
+            window.print();
+        }
+        
+        // Add print button after results are generated
+        function addPrintButton() {
+            const resultsDiv = document.getElementById('results');
+            const printBtn = document.createElement('button');
+            printBtn.innerHTML = '🖨️ Print Results';
+            printBtn.onclick = printResults;
+            printBtn.style.cssText = `
+                background: #4CAF50;
+                color: white;
+                padding: 10px 20px;
+                border: none;
+                border-radius: 5px;
+                cursor: pointer;
+                margin-top: 20px;
+                font-size: 16px;
+            `;
+            resultsDiv.appendChild(printBtn);
+        }
+        
+        // Enhanced form validation
+        function validateForm() {
+            const form = document.getElementById('compostForm');
+            const inputs = form.querySelectorAll('input[required], select[required]');
+            let isValid = true;
+            
+            inputs.forEach(input => {
+                if (!input.value.trim()) {
+                    input.style.borderColor = '#F44336';
+                    isValid = false;
+                } else {
+                    input.style.borderColor = '#4CAF50';
+                }
+            });
+            
+            return isValid;
+        }
+        
+        // Enhanced grade calculation with more detailed scoring
+        function calculateDetailedGrade(formData, processChecks) {
+            let criticalProcesses = 0;
+            let totalProcesses = 0;
+            let safetyScore = 0;
+            let testingScore = 0;
+            
+            // Critical process checks
+            const critical = ['cleanInputs', 'temp55', 'cured21', 'earthy', 'crumbly'];
+            critical.forEach(check => {
+                if (processChecks.includes(check)) criticalProcesses++;
+                totalProcesses++;
+            });
+            
+            // Safety and testing
+            const ecoliTested = formData.get('ecoliTested') === 'yes';
+            const heavyMetalsTested = formData.get('heavyMetalsTested') === 'yes';
+            const ph = parseFloat(formData.get('ph'));
+            const lead = parseFloat(formData.get('lead'));
+            const cadmium = parseFloat(formData.get('cadmium'));
+            
+            if (ecoliTested) safetyScore += 1;
+            if (heavyMetalsTested) safetyScore += 1;
+            if (ph >= 5.0 && ph <= 8.5) testingScore += 1;
+            if (lead && lead < 150) safetyScore += 1;
+            if (cadmium && cadmium < 1.5) safetyScore += 1;
+            
+            // Grade determination
+            const processPercent = (criticalProcesses / critical.length) * 100;
+            const hasHotCompost = processChecks.includes('temp55') || parseFloat(formData.get('maxTemp')) >= 55;
+            
+            if (processPercent >= 80 && hasHotCompost && safetyScore >= 2 && ecoliTested) {
+                return 'A';
+            } else if (processPercent >= 60 && hasHotCompost && processChecks.includes('earthy')) {
+                return 'B';
+            } else {
+                return 'C';
+            }
+        }
+        
+        // Update the generateGrade function to use enhanced validation
+        function generateGrade() {
+            if (!validateForm()) {
+                alert('Please fill in all required fields (marked with red borders).');
+                return;
+            }
+            
+            const form = document.getElementById('compostForm');
+            const formData = new FormData(form);
+            const processChecks = formData.getAll('process');
+            
+            const grade = calculateDetailedGrade(formData, processChecks);
+            displayResults(formData, processChecks, grade);
+            addPrintButton();
+            
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>
